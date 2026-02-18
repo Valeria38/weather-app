@@ -8,13 +8,16 @@ import Cloud from '../../assets/cloud.svg?react';
 import Wind from '../../assets/wind.svg?react';
 import Pressure from '../../assets/pressure.svg?react';
 import UpArrow from '../../assets/upArrow.svg?react';
+import type { Coords } from '../../../types';
 
-type Props = {};
+type Props = {
+  coords: Coords;
+};
 
-function AdditionalInfo({}: Props) {
+function AdditionalInfo({ coords: { lat, lon } }: Props) {
   const { data } = useSuspenseQuery({
-    queryKey: ['weather'],
-    queryFn: () => getWeather({ lat: 50.27, lon: 30.31 }),
+    queryKey: ['weather', lat, lon],
+    queryFn: () => getWeather({ lat, lon }),
   });
 
   return (
@@ -26,7 +29,7 @@ function AdditionalInfo({}: Props) {
         <div className="flex justify-between" key={value}>
           <div className="flex">
             <span className="text-gray-500 ">{label}</span>
-            <Icon className="size-8 invert" />
+            <Icon className="size-8 invert mx-4" />
           </div>
           <span>
             <FormatComponent value={value} number={data.current[value]} />
