@@ -1,19 +1,21 @@
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Coords } from '../../types';
+import { API_KEY } from '@/api';
 
 type Props = {
+  mapType: string;
   coords: Coords;
   onMapClick: (lat: number, lon: number) => void;
 };
 
-function Map({ coords: { lat, lon }, onMapClick }: Props) {
+function Map({ coords: { lat, lon }, onMapClick, mapType }: Props) {
   return (
     <MapContainer
       center={[lat, lon]}
       zoom={5}
       style={{
-        width: '700px',
+        width: '1000px',
         height: '500px',
       }}
     >
@@ -21,6 +23,10 @@ function Map({ coords: { lat, lon }, onMapClick }: Props) {
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url={`https://tile.openweathermap.org/map/${mapType}/{z}/{x}/{y}.png?appid=${API_KEY}`}
       />
       <Marker position={[lat, lon]} />
     </MapContainer>

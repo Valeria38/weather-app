@@ -1,7 +1,7 @@
 import { GeocodeSchema } from './schemas/geocodeSchema';
 import { weatherSchema } from './schemas/weatherSchema';
 
-const API_KEY = import.meta.env.VITE_API_KEY;
+export const API_KEY = import.meta.env.VITE_API_KEY;
 
 export async function getWeather({ lat, lon }: { lat: number; lon: number }) {
   const res = await fetch(

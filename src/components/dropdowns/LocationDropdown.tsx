@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction } from 'react';
+import React, { Activity, type Dispatch, type SetStateAction } from 'react';
 import {
   Select,
   SelectContent,
@@ -20,6 +20,9 @@ function LocationDropdown({ location, setLocation }: Props) {
         <SelectValue placeholder="Theme" />
       </SelectTrigger>
       <SelectContent className="z-1001">
+        <Activity mode={location === 'custom' ? 'hidden' : 'visible'}>
+          <SelectItem value="custom">Custom</SelectItem>
+        </Activity>
         <SelectGroup>
           {locations.map((loc) => (
             <SelectItem key={loc} value={loc}>
