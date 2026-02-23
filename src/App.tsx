@@ -10,16 +10,18 @@ import { getGeocode } from './api.ts';
 import { useQuery } from '@tanstack/react-query';
 import MapTypeDropdown from './components/dropdowns/MapTypeDropdown.tsx';
 import MapLegend from './components/MapLegend.tsx';
-import CurrentSkeleton from './skeletons/CurrentSkeleton.tsx';
-import DailySkeleton from './skeletons/DailySkeleton.tsx';
-import HourlySkeleton from './skeletons/HourlySkeleton.tsx';
-import AdditionalInfoSkeleton from './skeletons/AdditionalInfoSkeleton.tsx';
+import CurrentSkeleton from './components/skeletons/CurrentSkeleton.tsx';
+import DailySkeleton from './components/skeletons/DailySkeleton.tsx';
+import HourlySkeleton from './components/skeletons/HourlySkeleton.tsx';
+import AdditionalInfoSkeleton from './components/skeletons/AdditionalInfoSkeleton.tsx';
 import SidePanel from './components/SidePanel.tsx';
+import Burger from './assets/burger.svg?react';
 
 function App() {
   const [coords, setCoords] = useState<Coords>({ lat: 50.46, lon: 30.46 });
   const [location, setLocation] = useState<string>('Tokyo');
   const [mapType, setMapType] = useState<string>('clouds_new');
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
 
   const { data: geocodeData } = useQuery({
     queryKey: ['geocode', location],
@@ -48,6 +50,9 @@ function App() {
             <h1 className="text-2xl font-semibold">Map type</h1>
             <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
           </div>
+          <button onClick={() => setIsSidePanelOpen(true)}>
+            <Burger className="size-8 invert cursor-pointer ml-auto" />
+          </button>
         </div>
         <div className="relative">
           <Map mapType={mapType} coords={coordinates} onMapClick={onMapClick} />
@@ -67,7 +72,11 @@ function App() {
           <AdditionalInfo coords={coordinates} />
         </Suspense>
       </div>
-      <SidePanel coords={coordinates} />
+      <SidePanel
+        coords={coordinates}
+        isSidePanelOpen={isSidePanelOpen}
+        setIsSidePanelOpen={setIsSidePanelOpen}
+      />
     </>
   );
 }
