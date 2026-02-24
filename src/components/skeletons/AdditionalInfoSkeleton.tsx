@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 function AdditionalInfoSkeleton() {
   return (
     <Card
-      childrenClassName="flex flex-col gap-8"
+      childrenClassName="grid grid-cols-1 md:grid-cols-2 gap-8"
       title="Additional weather info"
     >
       {Array.from({ length: 6 }).map((_, i) => (
