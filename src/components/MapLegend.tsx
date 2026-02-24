@@ -9,7 +9,7 @@ function MapLegend({ mapType }: Props) {
     .map((stop) => `${stop.color} ${(stop.value / maxValue) * 100}%`)
     .join(',');
   return (
-    <div className="flex flex-col gap-3 absolute top-4 right-4 z-1000 w-96 rounded-xl shadow p-4 bg-background/50 border-accent/70">
+    <div className="flex flex-col gap-3 absolute top-4 right-4 z-1000 xs:w-96 w-48 rounded-xl shadow p-4 bg-background/50 border-accent/70">
       <h3 className="text-sm font-semibold text-foreground">{data.title}</h3>
       <div
         className="w-full rounded-xl border-accent/70 h-6"

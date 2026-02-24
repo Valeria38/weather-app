@@ -19,7 +19,10 @@ function DailyForecast({ coords: { lat, lon } }: Props) {
     <Card childrenClassName="flex flex-col gap-4" title="Daily forecast">
       {data.daily.map((day) => {
         return (
-          <div key={day.dt} className="grid grid-cols-5 gap-20 items-left">
+          <div
+            key={day.dt}
+            className="grid grid-cols-5 gap-4 items-left 2xl:justify-between"
+          >
             <p className="">
               {new Date(day.dt * 1000).toLocaleDateString(undefined, {
                 weekday: 'short',

@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function DailySkeleton() {
   return (
-    <Card childrenClassName="flex flex-col gap-4" title="Daily forecast">
+    <Card childrenClassName="flex flex-col gap-4 " title="Daily forecast">
       {Array.from({ length: 8 }).map((_, i) => {
         return (
           <div key={i} className="grid grid-cols-5 gap-20 items-left">

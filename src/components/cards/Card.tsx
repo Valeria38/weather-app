@@ -12,7 +12,7 @@ function Card({ children, title, childrenClassName, className }: Props) {
   return (
     <div
       className={clsx(
-        'p-4 rounded-xl bg-linear-to-br from-card to-card/60 bg-card shadow-md flex flex-col gap-4',
+        'p-4 rounded-xl bg-linear-to-br from-card to-card/60 bg-card shadow-md flex flex-col gap-4 2xl:h-full',
         className,
       )}
     >
@@ -20,7 +20,7 @@ function Card({ children, title, childrenClassName, className }: Props) {
       <div
         className={clsx(
           childrenClassName,
-          'animate-[fade-in_1s_ease-out_forwards]',
+          'animate-[fade-in_1s_ease-out_forwards] 2xl:flex-1',
         )}
       >
         {children}

@@ -16,7 +16,7 @@ type Props = {
 function MapTypeDropdown({ mapType, setMapType }: Props) {
   return (
     <Select value={mapType} onValueChange={(value) => setMapType(value)}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-full xs:w-[180px]">
         <SelectValue placeholder="Theme" />
       </SelectTrigger>
       <SelectContent className="z-1001">

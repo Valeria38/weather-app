@@ -22,7 +22,7 @@ function AdditionalInfo({ coords: { lat, lon } }: Props) {
 
   return (
     <Card
-      childrenClassName="flex flex-col gap-8"
+      childrenClassName="grid grid-cols-1 md:grid-cols-2 gap-8"
       title="Additional weather info"
     >
       {rows.map(({ label, value, Icon }) => (

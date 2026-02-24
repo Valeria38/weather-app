@@ -17,8 +17,8 @@ function Map({ coords: { lat, lon }, onMapClick, mapType }: Props) {
       center={[lat, lon]}
       zoom={5}
       style={{
-        width: '1000px',
-        height: '500px',
+        width: '100%',
+        height: '100%',
       }}
     >
       <MapClick onMapClick={onMapClick} coords={{ lat, lon }} />
