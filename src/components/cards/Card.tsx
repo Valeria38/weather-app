@@ -12,7 +12,7 @@ function Card({ children, title, childrenClassName, className }: Props) {
   return (
     <div
       className={clsx(
-        'p-4 rounded-xl bg-linear-to-br from-card to-card/60 bg-card shadow-md flex flex-col gap-4 2xl:h-full',
+        'p-4 rounded-xl bg-linear-to-br from-card to-card/60 bg-card shadow-md flex flex-col gap-4 2xl:h-full border dark:border-none',
         className,
       )}
     >

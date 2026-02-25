@@ -16,7 +16,10 @@ function DailyForecast({ coords: { lat, lon } }: Props) {
   });
 
   return (
-    <Card childrenClassName="flex flex-col gap-4" title="Daily forecast">
+    <Card
+      childrenClassName="flex flex-col gap-4 text-sm lg:text-md"
+      title="Daily forecast"
+    >
       {data.daily.map((day) => {
         return (
           <div
