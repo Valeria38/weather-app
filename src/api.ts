@@ -28,7 +28,7 @@ export async function getAirPollution({
   lon: number;
 }) {
   const res = await fetch(
-    `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`,
+    `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`,
   );
   const data = await res.json();
   return airPollutionSchema.parse(data);

@@ -43,7 +43,7 @@ const getAirQualityLevel = (
 ): AirQualityLevel => {
   for (const [level, range] of Object.entries(pollutant)) {
     if (value >= range.min && (range.max === null || value <= range.max)) {
-      return level;
+      return level as AirQualityLevel;
     }
   }
   return 'Very Poor';

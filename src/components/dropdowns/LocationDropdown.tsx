@@ -1,4 +1,4 @@
-import React, { Activity, type Dispatch, type SetStateAction } from 'react';
+import { Activity, type Dispatch, type SetStateAction } from 'react';
 import {
   Select,
   SelectContent,
