@@ -1,6 +1,6 @@
 {
   "homepage": "http://valeria38.github.io/weather-app",
-  "name": "react-movie",
+  "name": "weather-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
