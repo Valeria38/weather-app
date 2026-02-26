@@ -20,8 +20,8 @@ import MobileHeader from './components/MobileHeader.tsx';
 import ThemeToggle from './components/ThemeToggle.tsx';
 
 function App() {
-  const [coords, setCoords] = useState<Coords>({ lat: 50.46, lon: 30.46 });
-  const [location, setLocation] = useState<string>('Tokyo');
+  const [coords, setCoords] = useState<Coords>({ lat: 50.44, lon: 30.52 });
+  const [location, setLocation] = useState<string>('Kyiv');
   const [mapType, setMapType] = useState<string>('clouds_new');
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
 
