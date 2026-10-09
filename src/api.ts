@@ -3,6 +3,7 @@ import { geocodeSchema } from './schemas/geocodeSchema';
 import { weatherSchema } from './schemas/weatherSchema';
 
 export const API_KEY = import.meta.env.VITE_API_KEY;
+export const STADIA_API_KEY = import.meta.env.VITE_STADIA_API_KEY;
 
 export async function getWeather({ lat, lon }: { lat: number; lon: number }) {
   const res = await fetch(

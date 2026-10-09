@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Coords } from '../../types';
-import { API_KEY } from '@/api';
+import { API_KEY, STADIA_API_KEY } from '@/api';
 
 type Props = {
   mapType: string;
@@ -24,7 +24,7 @@ function Map({ coords: { lat, lon }, onMapClick, mapType }: Props) {
       {/* base map */}
       <TileLayer
         attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+        url={`https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${STADIA_API_KEY}`}
       />
       {/* weather top layer */}
       <TileLayer
