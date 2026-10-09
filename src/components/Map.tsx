@@ -2,14 +2,13 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Coords } from '../../types';
 import { API_KEY } from '@/api';
-import { useEffect } from 'react';
-import { MaptilerLayer } from '@maptiler/leaflet-maptilersdk';
 
 type Props = {
   mapType: string;
   coords: Coords;
   onMapClick: (lat: number, lon: number) => void;
 };
+
 
 function Map({ coords: { lat, lon }, onMapClick, mapType }: Props) {
   return (
@@ -22,7 +21,12 @@ function Map({ coords: { lat, lon }, onMapClick, mapType }: Props) {
       }}
     >
       <MapClick onMapClick={onMapClick} coords={{ lat, lon }} />
-      <MapTileLayer />
+      {/* base map */}
+      <TileLayer
+        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+      />
+      {/* weather top layer */}
       <TileLayer
         opacity={0.5}
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -52,20 +56,3 @@ function MapClick({
 }
 
 export default Map;
-
-function MapTileLayer() {
-  const map = useMap();
-  useEffect(() => {
-    const tileLayer = new MaptilerLayer({
-      style: 'basic-dark',
-      apiKey: '7n9qkVm5bwvWbij2BHh6',
-    });
-    tileLayer.addTo(map);
-
-    return () => {
-      map.removeLayer(tileLayer);
-    };
-  }, [map]);
-
-  return null;
-}

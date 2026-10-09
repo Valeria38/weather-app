@@ -67,7 +67,7 @@ function AirPollution({ coords }: Props) {
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 ">
       <h1 className="text-2xl font-semibold ">Air pollution</h1>
       <h1 className="text-5xl font-semibold ">{data.list[0].main.aqi}</h1>
       <div className="flex items-center gap-2">
