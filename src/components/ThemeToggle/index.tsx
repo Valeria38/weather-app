@@ -1,11 +1,9 @@
-import { Switch } from './ui/switch';
-import Sun from '../assets/sun.svg?react';
-import Moon from '../assets/moon.svg?react';
+import { Switch } from '../ui/switch';
+import Sun from '../../assets/sun.svg?react';
+import Moon from '../../assets/moon.svg?react';
 import { useTheme } from '@/hooks/useTheme';
 
-type Props = {};
-
-function ThemeToggle({}: Props) {
+function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   return (
     <div className="flex items-center gap-2">

@@ -14,10 +14,10 @@ import CurrentSkeleton from './components/skeletons/CurrentSkeleton.tsx';
 import DailySkeleton from './components/skeletons/DailySkeleton.tsx';
 import HourlySkeleton from './components/skeletons/HourlySkeleton.tsx';
 import AdditionalInfoSkeleton from './components/skeletons/AdditionalInfoSkeleton.tsx';
-import SidePanel from './components/SidePanel.tsx';
+import SidePanel from './components/SidePanel';
 import Burger from './assets/burger.svg?react';
-import MobileHeader from './components/MobileHeader.tsx';
-import ThemeToggle from './components/ThemeToggle.tsx';
+import MobileHeader from './components/MobileHeader';
+import ThemeToggle from './components/ThemeToggle';
 
 function App() {
   const [coords, setCoords] = useState<Coords>({ lat: 40.7989, lon: -81.3784 });

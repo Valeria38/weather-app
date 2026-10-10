@@ -24,3 +24,5 @@ export const airPollutionSchema = z.object({
     }),
   ),
 });
+
+export type AirPollutionResponse = z.infer<typeof airPollutionSchema>;
