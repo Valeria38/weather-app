@@ -65,7 +65,6 @@ function AirPollution({ coords }: Props) {
     queryKey: ['pollution', coords],
     queryFn: () => getAirPollution(coords),
   });
-  console.log('data', data)
 
   return (
     <div className="flex flex-col gap-4 ">
