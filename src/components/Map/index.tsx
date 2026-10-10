@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { Coords } from '../../types';
+import type { Coords } from '../../../types';
 import { API_KEY, STADIA_API_KEY } from '@/api';
 
 type Props = {
