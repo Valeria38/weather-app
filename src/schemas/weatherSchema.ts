@@ -98,3 +98,5 @@ export const weatherSchema = z.object({
     }),
   ),
 });
+
+export type WeatherData = z.infer<typeof weatherSchema>;

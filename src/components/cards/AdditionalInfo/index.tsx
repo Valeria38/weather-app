@@ -1,14 +1,14 @@
-import Card from './Card';
-import { getWeather } from '../../api';
+import Card from '../Card';
+import { getWeather } from '../../../api';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import Sunrise from '../../assets/sunrise.svg?react';
-import Sunset from '../../assets/sunset.svg?react';
-import Uv from '../../assets/uv.svg?react';
-import Cloud from '../../assets/cloud.svg?react';
-import Wind from '../../assets/wind.svg?react';
-import Pressure from '../../assets/pressure.svg?react';
-import UpArrow from '../../assets/upArrow.svg?react';
-import type { Coords } from '../../../types';
+import Sunrise from '../../../assets/sunrise.svg?react';
+import Sunset from '../../../assets/sunset.svg?react';
+import Uv from '../../../assets/uv.svg?react';
+import Cloud from '../../../assets/cloud.svg?react';
+import Wind from '../../../assets/wind.svg?react';
+import Pressure from '../../../assets/pressure.svg?react';
+import UpArrow from '../../../assets/upArrow.svg?react';
+import type { Coords } from '../../../../types';
 
 type Props = {
   coords: Coords;
@@ -54,6 +54,7 @@ function FormatComponent({ value, number }: { value: string; number: number }) {
     return (
       <UpArrow
         className=" size-8"
+        data-testid="icon-wind-arrow"
         style={{
           transform: `rotate(${number}deg)`,
         }}

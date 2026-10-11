@@ -1,7 +1,7 @@
 import DailyForecast from './components/cards/DailyForecast';
 import HourlyForecast from './components/cards/HourlyForecast.tsx';
 import CurrentWeather from './components/cards/CurrentWeather.tsx';
-import AdditionalInfo from './components/cards/AdditionalInfo.tsx';
+import AdditionalInfo from './components/cards/AdditionalInfo';
 import Map from './components/Map';
 import { Suspense, useState } from 'react';
 import type { Coords } from '../types.ts';
