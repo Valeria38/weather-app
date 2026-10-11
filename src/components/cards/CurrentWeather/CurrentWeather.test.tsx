@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { Suspense } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import CurrentWeather from './';
-import { getWeather } from '../../../api';
+import { getWeather } from '@/api';
 import type { WeatherData } from '@/schemas/weatherSchema';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-vi.mock('../../../api', () => ({
+vi.mock('@/api', () => ({
     getWeather: vi.fn(),
 }));
 

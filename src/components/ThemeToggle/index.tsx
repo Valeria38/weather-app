@@ -1,6 +1,6 @@
-import { Switch } from '../ui/switch';
-import Sun from '../../assets/sun.svg?react';
-import Moon from '../../assets/moon.svg?react';
+import { Switch } from '@/components/ui/switch';
+import Sun from '@/assets/sun.svg?react';
+import Moon from '@/assets/moon.svg?react';
 import { useTheme } from '@/hooks/useTheme';
 
 function ThemeToggle() {

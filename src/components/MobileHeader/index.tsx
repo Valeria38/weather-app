@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
-import Burger from '../../assets/burger.svg?react';
-import ThemeToggle from '../ThemeToggle';
+import Burger from '@/assets/burger.svg?react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 type Props = {
   setIsSidePanelOpen: Dispatch<SetStateAction<boolean>>;

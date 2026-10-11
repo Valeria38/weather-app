@@ -1,18 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import ThemeToggle from '../ThemeToggle';
+import ThemeToggle from '@/components/ThemeToggle';
 import { useTheme } from '@/hooks/useTheme';
 
 vi.mock('@/hooks/useTheme', () => ({
     useTheme: vi.fn(),
 }));
 
-vi.mock('../../assets/sun.svg?react', () => ({
+vi.mock('@/assets/sun.svg?react', () => ({
     default: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="sun-icon" {...props} />,
 }));
 
-vi.mock('../../assets/moon.svg?react', () => ({
+vi.mock('@/assets/moon.svg?react', () => ({
     default: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="moon-icon" {...props} />,
 }));
 

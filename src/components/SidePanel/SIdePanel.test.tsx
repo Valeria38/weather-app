@@ -5,17 +5,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SidePanel from './';
 import { getAirPollution } from '@/api';
 import type { AirPollutionResponse } from '@/schemas/airPollutionSchema';
-import { TooltipProvider } from '../ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 vi.mock('@/api', () => ({
     getAirPollution: vi.fn(),
 }));
 
-vi.mock('../../assets/information.svg?react', () => ({
+vi.mock('@/assets/information.svg?react', () => ({
     default: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="info-icon" {...props} />,
 }));
 
-vi.mock('../../assets/chevronRight.svg?react', () => ({
+vi.mock('@/assets/chevronRight.svg?react', () => ({
     default: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="chevron-icon" {...props} />,
 }));
 

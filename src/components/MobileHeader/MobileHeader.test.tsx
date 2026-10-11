@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import MobileHeader from './';
 import type { Mock } from 'vitest';
 
-vi.mock('../ThemeToggle', () => ({
+vi.mock('@/components/ThemeToggle', () => ({
     default: () => <div data-testid="theme-toggle">ThemeToggle</div>,
 }));
 
-vi.mock('../../assets/burger.svg?react', () => ({
+vi.mock('@/assets/burger.svg?react', () => ({
     default: (props: React.SVGProps<SVGSVGElement>) => (
         <svg data-testid="burger-icon" {...props} />
     ),

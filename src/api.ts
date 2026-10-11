@@ -1,6 +1,6 @@
-import { airPollutionSchema } from './schemas/airPollutionSchema';
-import { geocodeSchema } from './schemas/geocodeSchema';
-import { weatherSchema } from './schemas/weatherSchema';
+import { airPollutionSchema } from '@/schemas/airPollutionSchema';
+import { geocodeSchema } from '@/schemas/geocodeSchema';
+import { weatherSchema } from '@/schemas/weatherSchema';
 
 export const API_KEY = import.meta.env.VITE_API_KEY;
 export const STADIA_API_KEY = import.meta.env.VITE_STADIA_API_KEY;

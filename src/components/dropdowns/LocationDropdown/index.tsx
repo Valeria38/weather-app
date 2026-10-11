@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
   SelectItem,
-} from '../../ui/select';
+} from '@/components/ui/select';
 
 type Props = {
   location: string;
