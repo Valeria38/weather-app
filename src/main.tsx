@@ -4,7 +4,7 @@ import './index.css';
 import App from './App.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from './components/ui/tooltip.tsx';
-import ThemeProvider from './components/ThemeProvider.tsx';
+import ThemeProvider from './components/ThemeProvider';
 import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
