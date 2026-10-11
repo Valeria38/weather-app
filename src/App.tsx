@@ -8,7 +8,7 @@ import type { Coords } from '../types.ts';
 import LocationDropdown from './components/dropdowns/LocationDropdown';
 import { getGeocode } from './api.ts';
 import { useQuery } from '@tanstack/react-query';
-import MapTypeDropdown from './components/dropdowns/MapTypeDropdown.tsx';
+import MapTypeDropdown from './components/dropdowns/MapTypeDropdown';
 import MapLegend from './components/MapLegend';
 import CurrentSkeleton from './components/skeletons/CurrentSkeleton.tsx';
 import DailySkeleton from './components/skeletons/DailySkeleton.tsx';
