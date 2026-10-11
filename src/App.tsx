@@ -5,7 +5,7 @@ import AdditionalInfo from './components/cards/AdditionalInfo.tsx';
 import Map from './components/Map';
 import { Suspense, useState } from 'react';
 import type { Coords } from '../types.ts';
-import LocationDropdown from './components/dropdowns/LocationDropdown.tsx';
+import LocationDropdown from './components/dropdowns/LocationDropdown';
 import { getGeocode } from './api.ts';
 import { useQuery } from '@tanstack/react-query';
 import MapTypeDropdown from './components/dropdowns/MapTypeDropdown.tsx';
