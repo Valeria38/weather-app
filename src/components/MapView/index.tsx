@@ -1,6 +1,8 @@
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+
+import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import type { Coords } from 'types';
+
 import { API_KEY, STADIA_API_KEY } from '@/api';
 
 type Props = {
@@ -9,8 +11,7 @@ type Props = {
   onMapClick: (lat: number, lon: number) => void;
 };
 
-
-function Map({ coords: { lat, lon }, onMapClick, mapType }: Props) {
+function MapView({ coords: { lat, lon }, onMapClick, mapType }: Props) {
   return (
     <MapContainer
       center={[lat, lon]}
@@ -55,4 +56,4 @@ function MapClick({
   return null;
 }
 
-export default Map;
+export default MapView;

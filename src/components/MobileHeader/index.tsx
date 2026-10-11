@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
+
 import Burger from '@/assets/burger.svg?react';
 import ThemeToggle from '@/components/ThemeToggle';
 

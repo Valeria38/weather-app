@@ -1,14 +1,15 @@
-import Card from '@/components/cards/Card';
-import { getWeather } from '@/api';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import type { Coords } from 'types';
+
+import { getWeather } from '@/api';
+import Cloud from '@/assets/cloud.svg?react';
+import Pressure from '@/assets/pressure.svg?react';
 import Sunrise from '@/assets/sunrise.svg?react';
 import Sunset from '@/assets/sunset.svg?react';
-import Uv from '@/assets/uv.svg?react';
-import Cloud from '@/assets/cloud.svg?react';
-import Wind from '@/assets/wind.svg?react';
-import Pressure from '@/assets/pressure.svg?react';
 import UpArrow from '@/assets/upArrow.svg?react';
-import type { Coords } from 'types';
+import Uv from '@/assets/uv.svg?react';
+import Wind from '@/assets/wind.svg?react';
+import Card from '@/components/cards/Card';
 
 type Props = {
   coords: Coords;

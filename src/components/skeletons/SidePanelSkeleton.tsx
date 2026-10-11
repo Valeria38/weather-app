@@ -1,5 +1,5 @@
-import { Skeleton } from '@/components/ui/skeleton';
 import SideCardSkeleton from '@/components/skeletons/SideCardSkeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function SidePanelSkeleton() {
   return (

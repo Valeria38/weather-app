@@ -1,11 +1,12 @@
 import { type Dispatch, type SetStateAction } from 'react';
+
 import {
   Select,
   SelectContent,
   SelectGroup,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectItem,
 } from '@/components/ui/select';
 
 type Props = {

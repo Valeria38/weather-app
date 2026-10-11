@@ -1,5 +1,6 @@
-import type { Theme } from '@/components/ThemeProvider';
 import { createContext, useContext } from 'react';
+
+import type { Theme } from '@/components/ThemeProvider';
 
 type ThemeCtxType = {
   theme: Theme;

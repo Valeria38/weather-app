@@ -1,22 +1,23 @@
-import DailyForecast from '@/components/cards/DailyForecast';
-import HourlyForecast from '@/components/cards/HourlyForecast';
-import CurrentWeather from '@/components/cards/CurrentWeather';
-import AdditionalInfo from '@/components/cards/AdditionalInfo';
-import Map from '@/components/Map';
+import { useQuery } from '@tanstack/react-query';
 import { Suspense, useState } from 'react';
 import type { Coords } from 'types';
-import LocationDropdown from '@/components/dropdowns/LocationDropdown';
+
 import { getGeocode } from '@/api.ts';
-import { useQuery } from '@tanstack/react-query';
+import Burger from '@/assets/burger.svg?react';
+import AdditionalInfo from '@/components/cards/AdditionalInfo';
+import CurrentWeather from '@/components/cards/CurrentWeather';
+import DailyForecast from '@/components/cards/DailyForecast';
+import HourlyForecast from '@/components/cards/HourlyForecast';
+import LocationDropdown from '@/components/dropdowns/LocationDropdown';
 import MapTypeDropdown from '@/components/dropdowns/MapTypeDropdown';
 import MapLegend from '@/components/MapLegend';
+import MapView from '@/components/MapView';
+import MobileHeader from '@/components/MobileHeader';
+import SidePanel from '@/components/SidePanel';
+import AdditionalInfoSkeleton from '@/components/skeletons/AdditionalInfoSkeleton.tsx';
 import CurrentSkeleton from '@/components/skeletons/CurrentSkeleton.tsx';
 import DailySkeleton from '@/components/skeletons/DailySkeleton.tsx';
 import HourlySkeleton from '@/components/skeletons/HourlySkeleton.tsx';
-import AdditionalInfoSkeleton from '@/components/skeletons/AdditionalInfoSkeleton.tsx';
-import SidePanel from '@/components/SidePanel';
-import Burger from '@/assets/burger.svg?react';
-import MobileHeader from '@/components/MobileHeader';
 import ThemeToggle from '@/components/ThemeToggle';
 
 function App() {
@@ -67,7 +68,7 @@ function App() {
         </div>
         <div className="grid grid-cols-1 2xl:flex-1 2xl:min-h-0 gap-4 md:grid-cols-2 2xl:grid-cols-4 2xl:grid-rows-4">
           <div className="relative h-120 2xl:h-auto col-span-1 md:col-span-2 2xl:col-span-4 2xl:row-span-2 order-1">
-            <Map
+            <MapView
               mapType={mapType}
               coords={coordinates}
               onMapClick={onMapClick}
