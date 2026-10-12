@@ -9,14 +9,20 @@ type Props = {
 };
 
 function Card({ children, title, childrenClassName, className }: Props) {
+  const accesibleName = title
+    ? title.replace(/\s+/g, '-').toLowerCase()
+    : 'card';
   return (
-    <div
+    <section
+      aria-labelledby={accesibleName}
       className={clsx(
         'p-4 rounded-xl bg-linear-to-br from-card to-card/60 bg-card shadow-md flex flex-col gap-4 2xl:h-full border dark:border-none',
         className,
       )}
     >
-      <h2 className="text-2xl font-semibold">{title}</h2>
+      <h2 className="text-2xl font-semibold" id={accesibleName}>
+        {title}
+      </h2>
       <div
         className={clsx(
           childrenClassName,
@@ -25,7 +31,7 @@ function Card({ children, title, childrenClassName, className }: Props) {
       >
         {children}
       </div>
-    </div>
+    </section>
   );
 }
 

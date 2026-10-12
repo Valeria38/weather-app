@@ -8,7 +8,11 @@ function ThemeToggle() {
   return (
     <div className="flex items-center gap-2">
       <Sun className="size-5 " />
-      <Switch checked={theme === 'dark'} onCheckedChange={toggleTheme} />
+      <Switch
+        checked={theme === 'dark'}
+        onCheckedChange={toggleTheme}
+        aria-label="Toggle theme"
+      />
       <Moon className="size-5 " />
     </div>
   );
