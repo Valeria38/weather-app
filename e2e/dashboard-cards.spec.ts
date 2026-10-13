@@ -1,7 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Weather Dashboard Cards', () => {
+import { setupApiMocks } from './helpers/mock-api';
+
+test.describe('Weather Dashboard - Cards', () => {
   test.beforeEach(async ({ page }) => {
+    await setupApiMocks(page);
     await page.goto('/');
   });
 
@@ -31,7 +34,6 @@ test.describe('Weather Dashboard Cards', () => {
     const dailySection = page.getByRole('region', { name: /daily forecast/i });
 
     await expect(dailySection).toBeVisible();
-    // await dailySection.scrollIntoViewIfNeeded();
     await expect(dailySection.getByText('Mon').first()).toBeVisible();
     await expect(dailySection.getByText('Tue').first()).toBeVisible();
     await expect(dailySection.getByText('Wed').first()).toBeVisible();

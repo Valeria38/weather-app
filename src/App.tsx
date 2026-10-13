@@ -61,6 +61,8 @@ function App() {
             <button
               onClick={() => setIsSidePanelOpen(true)}
               className="hidden xs:block"
+              aria-label="Open sidepanel"
+              aria-expanded={isSidePanelOpen}
             >
               <Burger className="size-8  cursor-pointer ml-auto lg:hidden" />
             </button>

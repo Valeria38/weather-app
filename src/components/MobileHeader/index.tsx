@@ -11,7 +11,11 @@ function MobileHeader({ setIsSidePanelOpen }: Props) {
   return (
     <header className="w-full h-16 p-4 bg-background sticky flex justify-end z-1001 top-0 sm:hidden gap-8">
       <ThemeToggle />
-      <button onClick={() => setIsSidePanelOpen(true)}>
+      <button
+        onClick={() => setIsSidePanelOpen(true)}
+        aria-label="Open sidepanel"
+        aria-expanded={false}
+      >
         <Burger className="size-8  cursor-pointer" />
       </button>
     </header>

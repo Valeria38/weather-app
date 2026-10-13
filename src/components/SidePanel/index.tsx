@@ -24,19 +24,23 @@ type Props = {
 function SidePanel(props: Props) {
   const { isSidePanelOpen, setIsSidePanelOpen } = props;
   return (
-    <div
+    <aside
+      aria-label="Air pollution"
       className={clsx(
         ' overflow-scroll fixed top-0 right-0 h-screen w-(--sidebar-width) shadow-md bg-sidebar z-1001 px-4 py-8 transition-transform duration-300 lg:translate-x-0',
         isSidePanelOpen ? 'translate-x-0' : 'translate-x-full',
       )}
     >
-      <button onClick={() => setIsSidePanelOpen(false)}>
+      <button
+        onClick={() => setIsSidePanelOpen(false)}
+        aria-label="Close sidepanel"
+      >
         <ChevronRight className="size-8  cursor-pointer -ml-2 lg:hidden" />
       </button>
       <Suspense fallback={<SidePanelSkeleton />}>
         <AirPollution {...props} />
       </Suspense>
-    </div>
+    </aside>
   );
 }
 
@@ -94,9 +98,7 @@ function AirPollution({ coords }: Props) {
           airQualityRanges[key.toUpperCase() as keyof typeof airQualityRanges];
         const max = Math.max(pollutant['Very Poor'].min, value);
         const currentLevel = getAirQualityLevel(value, pollutant);
-
         const qualityColor = getQualityColor(currentLevel);
-
         return (
           <Card
             childrenClassName="flex flex-col gap-3"

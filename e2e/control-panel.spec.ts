@@ -1,7 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+import { setupApiMocks } from './helpers/mock-api';
+
 test.describe('Weather Dashboard - Map & Layers', () => {
   test.beforeEach(async ({ page }) => {
+    await setupApiMocks(page);
     await page.goto('/');
   });
 
@@ -19,9 +22,7 @@ test.describe('Weather Dashboard - Map & Layers', () => {
   });
 
   test('should allow selecting a new location', async ({ page }) => {
-    // Находим селект локации по роли combobox и имени
     const locationSelect = page.getByRole('combobox', { name: 'Location' });
-    // const tempCard = page.locator('text=Current Weather').locator('..');
     const weatherCard = page.getByRole('region', { name: /current weather/i });
     const initialWeatherParams = await weatherCard.textContent();
 

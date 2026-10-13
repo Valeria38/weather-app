@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function SidePanelSkeleton() {
   return (
-    <div className="flex flex-col gap-4">
+    <aside className="flex flex-col gap-4">
       <h1 className="text-2xl font-semibold ">Air pollution</h1>
       <Skeleton className="size-12" />
       <div className="flex items-center gap-2">
@@ -12,7 +12,7 @@ function SidePanelSkeleton() {
       {Array.from({ length: 8 }).map((_, idx) => (
         <SideCardSkeleton key={idx} />
       ))}
-    </div>
+    </aside>
   );
 }
 
