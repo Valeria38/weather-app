@@ -50,6 +50,12 @@ test.describe('Weather Dashboard - Cards', () => {
       name: /hourly forecast/i,
     });
     await expect(hourlySection).toBeVisible();
+    const hourlyScrollRegion = page.getByRole('region', {
+      name: '48-hour forecast items',
+    });
+    await expect(hourlyScrollRegion).toHaveAttribute('tabindex', '0');
+    await hourlyScrollRegion.focus();
+    await expect(hourlyScrollRegion).toBeFocused();
 
     const hourlyTemps = hourlySection.locator('text=°C');
 

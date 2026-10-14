@@ -69,10 +69,9 @@ test.describe('Weather Dashboard - Sidepanel', () => {
     });
     await expect(sidepanel).toBeVisible();
     const coCard = sidepanel.locator('section', { hasText: /^co/i });
-    const infoIcon = coCard
-      .locator('button')
-      .filter({ has: page.locator('svg') })
-      .first();
+    const infoIcon = coCard.getByRole('button', {
+      name: 'More information about Carbon monoxide',
+    });
     await infoIcon.hover();
 
     const tooltipContent = page.locator('text=Concentration of');

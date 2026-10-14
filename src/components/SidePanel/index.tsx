@@ -60,11 +60,11 @@ const getAirQualityLevel = (
 
 const getQualityColor = (level: AirQualityLevel) => {
   const colors = {
-    Good: 'bg-green-500',
-    Fair: 'bg-yellow-500',
-    Moderate: 'bg-orange-500',
-    Poor: 'bg-red-500',
-    'Very Poor': 'bg-purple-500',
+    Good: 'bg-green-700',
+    Fair: 'bg-yellow-700',
+    Moderate: 'bg-orange-700',
+    Poor: 'bg-red-700',
+    'Very Poor': 'bg-purple-700',
   };
   return colors[level] || 'bg-zinc-500';
 };
@@ -82,7 +82,7 @@ function AirPollution({ coords }: Props) {
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-semibold ">AQI</h1>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger aria-label="More information about the Air Quality Index">
             <Information className="size-4" />
           </TooltipTrigger>
           <TooltipContent className="z-2000 bg-white!">
@@ -99,6 +99,8 @@ function AirPollution({ coords }: Props) {
         const max = Math.max(pollutant['Very Poor'].min, value);
         const currentLevel = getAirQualityLevel(value, pollutant);
         const qualityColor = getQualityColor(currentLevel);
+        const pollutantName =
+          pollutantNameMapping[key.toUpperCase() as Pollutant];
         return (
           <Card
             childrenClassName="flex flex-col gap-3"
@@ -109,20 +111,25 @@ function AirPollution({ coords }: Props) {
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold capitalize">{key}</span>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger
+                    aria-label={`More information about ${pollutantName}`}
+                  >
                     <Information className="size-4" />
                   </TooltipTrigger>
                   <TooltipContent className="z-2000 bg-white!">
-                    <p className="max-w-xs">
-                      Concentration of{' '}
-                      {pollutantNameMapping[key.toUpperCase() as Pollutant]}
-                    </p>
+                    <p className="max-w-xs">Concentration of {pollutantName}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
               <span className="text-lg font-semibold">{value}</span>
             </div>
-            <Slider disabled min={0} max={max} value={[value]} />
+            <Slider
+              disabled
+              min={0}
+              max={max}
+              value={[value]}
+              aria-label={`${pollutantName} level`}
+            />
             <div className="flex justify-between text-xs">
               <p>0</p>
               <p>{max}</p>
