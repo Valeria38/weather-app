@@ -85,6 +85,9 @@ describe('SidePanel Component', () => {
     expect(await screen.findByText('2')).toBeInTheDocument();
     expect(await screen.findByText('pm2_5')).toBeInTheDocument();
     expect(await screen.findByText('5.01')).toBeInTheDocument();
+    expect(
+      screen.getByRole('slider', { name: 'Carbon monoxide level' }),
+    ).toBeInTheDocument();
   });
 
   it('calls setIsSidePanelOpen(false) when close button is clicked', async () => {

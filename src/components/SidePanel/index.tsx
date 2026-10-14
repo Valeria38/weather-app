@@ -128,7 +128,7 @@ function AirPollution({ coords }: Props) {
               min={0}
               max={max}
               value={[value]}
-              aria-label={`${pollutantName} level`}
+              thumbLabels={[`${pollutantName} level`]}
             />
             <div className="flex justify-between text-xs">
               <p>0</p>
@@ -141,8 +141,8 @@ function AirPollution({ coords }: Props) {
                   className={clsx(
                     'px-2 py-1 rounded-md text-xs font-medium',
                     quality === currentLevel
-                      ? qualityColor
-                      : 'bg-muted text-muted-foreground',
+                      ? `${qualityColor} text-white`
+                      : 'bg-muted text-foreground',
                   )}
                 >
                   {quality}
