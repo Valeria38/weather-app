@@ -20,15 +20,24 @@ import DailySkeleton from '@/components/skeletons/DailySkeleton.tsx';
 import HourlySkeleton from '@/components/skeletons/HourlySkeleton.tsx';
 import ThemeToggle from '@/components/ThemeToggle';
 
+const DEFAULT_LOCATION = 'Canton, OH, US';
+const DEFAULT_COORDS: Coords = { lat: 40.7989, lon: -81.3784 };
+
 function App() {
-  const [coords, setCoords] = useState<Coords>({ lat: 40.7989, lon: -81.3784 });
-  const [location, setLocation] = useState<string>('Canton, OH, US');
+  const [coords, setCoords] = useState<Coords>(DEFAULT_COORDS);
+  const [location, setLocation] = useState<string>(DEFAULT_LOCATION);
   const [mapType, setMapType] = useState<string>('clouds_new');
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
 
-  const { data: geocodeData } = useQuery({
+  const {
+    data: geocodeData,
+    isPending: isGeocodePending,
+    isError: isGeocodeError,
+    refetch: retryGeocode,
+  } = useQuery({
     queryKey: ['geocode', location],
     queryFn: () => getGeocode(location),
+    enabled: location !== 'custom' && location !== DEFAULT_LOCATION,
   });
 
   const onMapClick = (lat: number, lon: number) => {
@@ -36,10 +45,30 @@ function App() {
     setLocation('custom');
   };
 
-  const coordinates =
-    location === 'custom'
-      ? coords
-      : { lat: geocodeData?.[0].lat ?? 0, lon: geocodeData?.[0].lon ?? 0 };
+  const geocodedLocation = geocodeData?.[0];
+  const geocodedLocationJsx = geocodedLocation
+    ? { lat: geocodedLocation.lat, lon: geocodedLocation.lon }
+    : undefined;
+  const usesCurrentCoords =
+    location === 'custom' || location === DEFAULT_LOCATION;
+  const coordinates: Coords | undefined = usesCurrentCoords
+    ? coords
+    : geocodedLocationJsx;
+
+  const geocodeErrorJsx = isGeocodeError ? (
+    <>
+      <p>Could not load this location. Check your connection.</p>
+      <button
+        className="rounded-md border px-4 py-2"
+        onClick={() => void retryGeocode()}
+        type="button"
+      >
+        Retry location lookup
+      </button>
+    </>
+  ) : (
+    <p>No matching location was found.</p>
+  );
 
   return (
     <>
@@ -68,42 +97,53 @@ function App() {
             </button>
           </div>
         </div>
-        <div className="grid grid-cols-1 2xl:flex-1 2xl:min-h-0 gap-4 md:grid-cols-2 2xl:grid-cols-4 2xl:grid-rows-4">
-          <div className="relative h-120 2xl:h-auto col-span-1 md:col-span-2 2xl:col-span-4 2xl:row-span-2 order-1">
-            <MapView
-              mapType={mapType}
-              coords={coordinates}
-              onMapClick={onMapClick}
-            />
-            <MapLegend mapType={mapType} />
+        {coordinates ? (
+          <div className="grid grid-cols-1 2xl:flex-1 2xl:min-h-0 gap-4 md:grid-cols-2 2xl:grid-cols-4 2xl:grid-rows-4">
+            <div className="relative h-120 2xl:h-auto col-span-1 md:col-span-2 2xl:col-span-4 2xl:row-span-2 order-1">
+              <MapView
+                mapType={mapType}
+                coords={coordinates}
+                onMapClick={onMapClick}
+              />
+              <MapLegend mapType={mapType} />
+            </div>
+            <div className="col-span-1 2xl:row-span-2 order-2">
+              <Suspense fallback={<CurrentSkeleton />}>
+                <CurrentWeather coords={coordinates} />
+              </Suspense>
+            </div>
+            <div className="col-span-1 order-3 2xl:order-4 2xl:row-span-2">
+              <Suspense fallback={<DailySkeleton />}>
+                <DailyForecast coords={coordinates} />
+              </Suspense>
+            </div>
+            <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-4 2xl:order-3">
+              <Suspense fallback={<HourlySkeleton />}>
+                <HourlyForecast coords={coordinates} />
+              </Suspense>
+            </div>
+            <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-5">
+              <Suspense fallback={<AdditionalInfoSkeleton />}>
+                <AdditionalInfo coords={coordinates} />
+              </Suspense>
+            </div>
           </div>
-          <div className="col-span-1 2xl:row-span-2 order-2">
-            <Suspense fallback={<CurrentSkeleton />}>
-              <CurrentWeather coords={coordinates} />
-            </Suspense>
-          </div>
-          <div className="col-span-1 order-3 2xl:order-4 2xl:row-span-2">
-            <Suspense fallback={<DailySkeleton />}>
-              <DailyForecast coords={coordinates} />
-            </Suspense>
-          </div>
-          <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-4 2xl:order-3">
-            <Suspense fallback={<HourlySkeleton />}>
-              <HourlyForecast coords={coordinates} />
-            </Suspense>
-          </div>
-          <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-5">
-            <Suspense fallback={<AdditionalInfoSkeleton />}>
-              <AdditionalInfo coords={coordinates} />
-            </Suspense>
-          </div>
-        </div>
+        ) : (
+          <section
+            className="flex min-h-120 flex-col items-center justify-center gap-4 rounded-md bg-card p-6 text-center"
+            role={isGeocodeError ? 'alert' : 'status'}
+          >
+            {isGeocodePending ? <p>Loading location...</p> : geocodeErrorJsx}
+          </section>
+        )}
       </div>
-      <SidePanel
-        coords={coordinates}
-        isSidePanelOpen={isSidePanelOpen}
-        setIsSidePanelOpen={setIsSidePanelOpen}
-      />
+      {coordinates && (
+        <SidePanel
+          coords={coordinates}
+          isSidePanelOpen={isSidePanelOpen}
+          setIsSidePanelOpen={setIsSidePanelOpen}
+        />
+      )}
     </>
   );
 }
