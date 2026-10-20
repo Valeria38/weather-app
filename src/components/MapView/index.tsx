@@ -1,6 +1,13 @@
 import 'leaflet/dist/leaflet.css';
 
-import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
+import { useEffect } from 'react';
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from 'react-leaflet';
 import type { Coords } from 'types';
 
 import { API_KEY, STADIA_API_KEY } from '@/api';
@@ -25,7 +32,7 @@ function MapView({ coords: { lat, lon }, onMapClick, mapType }: Props) {
       {/* base map */}
       <TileLayer
         attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url={`https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${STADIA_API_KEY}`}
+        url={`https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png?api_key=${STADIA_API_KEY}`}
       />
       {/* weather top layer */}
       <TileLayer
@@ -45,12 +52,27 @@ function MapClick({
   coords: Coords;
   onMapClick: (lat: number, lon: number) => void;
 }) {
-  const map = useMap();
-  map.panTo([coords.lat, coords.lon]);
+  // const map = useMap();
+  // map.panTo([coords.lat, coords.lon]);
 
-  map.on('click', (e) => {
-    const { lat, lng } = e.latlng;
-    onMapClick(lat, lng);
+  // map.on('click', (e) => {
+  //   const { lat, lng } = e.latlng;
+  //   onMapClick(lat, lng);
+  // });
+
+  // return null;
+  const map = useMap();
+
+  // Плавное перемещение карты при изменении coords через useEffect
+  useEffect(() => {
+    map.panTo([coords.lat, coords.lon]);
+  }, [map, coords.lat, coords.lon]);
+
+  useMapEvents({
+    click: (e) => {
+      const { lat, lng } = e.latlng;
+      onMapClick(lat, lng);
+    },
   });
 
   return null;

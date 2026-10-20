@@ -35,8 +35,8 @@ function createWeatherData(lat: number, lon: number): WeatherData {
       wind_deg: 180,
       weather: [weatherCondition],
     },
-    hourly: Array.from({ length: 48 }, (_, index) => ({
-      dt: timestamp + index * 3600,
+    hourly: Array.from({ length: 40 }, (_, index) => ({
+      dt: timestamp + index * 3 * 3600,
       temp: temperature + (index % 5) - 2,
       feels_like: temperature - 1,
       pressure: 1013,
@@ -112,7 +112,7 @@ export async function setupApiMocks(page: Page) {
   });
 
   await page.route(
-    (url) => url.pathname.includes('/data/3.0/onecall'),
+    (url) => url.pathname.includes('/data/2.5/weather'),
     async (route) => {
       const url = new URL(route.request().url());
       const latParam = url.searchParams.get('lat');
@@ -128,10 +128,89 @@ export async function setupApiMocks(page: Page) {
           ? parsedLon
           : defaultCoordinates.lon;
 
+      const weatherData = createWeatherData(lat, lon);
+
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(createWeatherData(lat, lon)),
+        body: JSON.stringify({
+          coord: { lon, lat },
+          weather: weatherData.current.weather,
+          main: {
+            temp: weatherData.current.temp,
+            feels_like: weatherData.current.feels_like,
+            pressure: weatherData.current.pressure,
+            humidity: weatherData.current.humidity,
+          },
+          visibility: weatherData.current.visibility,
+          wind: {
+            speed: weatherData.current.wind_speed,
+            deg: weatherData.current.wind_deg,
+          },
+          clouds: { all: weatherData.current.clouds },
+          dt: weatherData.current.dt,
+          sys: {
+            sunrise: weatherData.current.sunrise,
+            sunset: weatherData.current.sunset,
+          },
+          timezone: weatherData.timezone_offset,
+          name: 'Canton',
+        }),
+      });
+    },
+  );
+
+  await page.route(
+    (url) => url.pathname.includes('/data/2.5/forecast'),
+    async (route) => {
+      const url = new URL(route.request().url());
+      const latParam = url.searchParams.get('lat');
+      const lonParam = url.searchParams.get('lon');
+      const parsedLat = Number(latParam);
+      const parsedLon = Number(lonParam);
+      const lat =
+        latParam && Number.isFinite(parsedLat)
+          ? parsedLat
+          : defaultCoordinates.lat;
+      const lon =
+        lonParam && Number.isFinite(parsedLon)
+          ? parsedLon
+          : defaultCoordinates.lon;
+
+      const weatherData = createWeatherData(lat, lon);
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          cnt: weatherData.hourly.length,
+          list: weatherData.hourly.map((item) => ({
+            dt: item.dt,
+            main: {
+              temp: item.temp,
+              feels_like: item.feels_like,
+              pressure: item.pressure,
+              humidity: item.humidity,
+            },
+            weather: item.weather,
+            clouds: { all: item.clouds },
+            wind: { speed: item.wind_speed, deg: item.wind_deg },
+            visibility: item.visibility,
+            pop: item.pop,
+            dt_txt: new Date(item.dt * 1000)
+              .toISOString()
+              .replace('T', ' ')
+              .slice(0, 19),
+          })),
+          city: {
+            name: 'Canton',
+            coord: { lat, lon },
+            country: 'US',
+            timezone: weatherData.timezone_offset,
+            sunrise: weatherData.current.sunrise,
+            sunset: weatherData.current.sunset,
+          },
+        }),
       });
     },
   );

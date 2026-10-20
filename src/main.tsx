@@ -10,6 +10,7 @@ import { createRoot } from 'react-dom/client';
 
 import ThemeProvider from '@/components/ThemeProvider';
 import { TooltipProvider } from '@/components/ui/tooltip.tsx';
+import { shouldRetryQuery } from '@/lib/queryRetry';
 
 import App from './App.tsx';
 
@@ -23,7 +24,13 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: shouldRetryQuery,
+    },
+  },
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

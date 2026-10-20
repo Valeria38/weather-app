@@ -4,6 +4,7 @@ import type { Coords } from 'types';
 import { getWeather } from '@/api';
 import Card from '@/components/cards/Card';
 import WeatherIcon from '@/components/WeatherIcon';
+import { formatTimeAtOffset } from '@/lib/date';
 
 type Props = {
   coords: Coords;
@@ -16,26 +17,25 @@ function HourlyForecast({ coords: { lat, lon } }: Props) {
   });
 
   return (
-    <Card childrenClassName="min-w-0" title="Hourly forecast(48 hours)">
+    <Card childrenClassName="min-w-0" title="5-day forecast (3-hour intervals)">
       <div
         role="region"
-        aria-label="48-hour forecast items"
+        aria-label="5-day forecast intervals"
         tabIndex={0}
         className="flex w-full gap-6 overflow-x-auto"
       >
         {data.hourly.map((hour) => (
           <div
             key={hour.dt}
-            className="flex flex-col gap-2 items-center p-2 2xl:justify-between"
+            className="flex shrink-0 flex-col gap-2 items-center p-2 2xl:justify-between"
           >
             <p className="whitespace-nowrap 2xl:scale-110">
-              {new Date(hour.dt * 1000).toLocaleTimeString(undefined, {
-                hour: 'numeric',
-                minute: '2-digit',
-              })}
+              {formatTimeAtOffset(hour.dt, data.timezone_offset)}
             </p>
             <WeatherIcon className="2xl:size-10" src={hour.weather[0].icon} />
-            <p className=" 2xl:scale-110">{Math.round(hour.temp)} °C</p>
+            <p className="whitespace-nowrap 2xl:scale-110">
+              {Math.round(hour.temp)} °C
+            </p>
           </div>
         ))}
       </div>

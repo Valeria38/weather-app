@@ -29,6 +29,7 @@ vi.mock('react-leaflet', () => ({
     panTo: vi.fn(),
     on: vi.fn(),
   }),
+  useMapEvents: vi.fn(),
 }));
 
 vi.mock('@/api', () => ({

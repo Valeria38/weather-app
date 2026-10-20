@@ -16,6 +16,7 @@ describe('HourlyForecast Component', () => {
   let queryClient: QueryClient;
 
   const mockWeatherData = {
+    timezone_offset: 0,
     hourly: [
       {
         dt: 1718000000,
@@ -42,7 +43,9 @@ describe('HourlyForecast Component', () => {
   });
 
   it('renders hourly forecast items and formats temperature correctly', async () => {
-    vi.mocked(getWeather).mockResolvedValueOnce(mockWeatherData as WeatherData);
+    vi.mocked(getWeather).mockResolvedValueOnce(
+      mockWeatherData as unknown as WeatherData,
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -53,7 +56,7 @@ describe('HourlyForecast Component', () => {
     );
 
     expect(
-      await screen.findByText('Hourly forecast(48 hours)'),
+      await screen.findByText('5-day forecast (3-hour intervals)'),
     ).toBeInTheDocument();
     expect(await screen.findByText('21 °C')).toBeInTheDocument();
   });

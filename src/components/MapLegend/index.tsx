@@ -4,6 +4,7 @@ type Props = {
 
 function MapLegend({ mapType }: Props) {
   const data = mapTypeData[mapType];
+  console.log('d', data);
   const maxValue = data.stops[data.stops.length - 1].value;
   const gradientStops = data.stops
     .map((stop) => `${stop.color} ${(stop.value / maxValue) * 100}%`)

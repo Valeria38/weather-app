@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { QueryErrorResetBoundary, useQuery } from '@tanstack/react-query';
 import { Suspense, useState } from 'react';
 import type { Coords } from 'types';
 
-import { getGeocode } from '@/api.ts';
+import { getGeocode } from '@/api';
 import Burger from '@/assets/burger.svg?react';
 import AdditionalInfo from '@/components/cards/AdditionalInfo';
 import CurrentWeather from '@/components/cards/CurrentWeather';
@@ -13,6 +13,7 @@ import MapTypeDropdown from '@/components/dropdowns/MapTypeDropdown';
 import MapLegend from '@/components/MapLegend';
 import MapView from '@/components/MapView';
 import MobileHeader from '@/components/MobileHeader';
+import QueryErrorBoundary from '@/components/QueryErrorBoundary';
 import SidePanel from '@/components/SidePanel';
 import AdditionalInfoSkeleton from '@/components/skeletons/AdditionalInfoSkeleton.tsx';
 import CurrentSkeleton from '@/components/skeletons/CurrentSkeleton.tsx';
@@ -107,26 +108,37 @@ function App() {
               />
               <MapLegend mapType={mapType} />
             </div>
-            <div className="col-span-1 2xl:row-span-2 order-2">
-              <Suspense fallback={<CurrentSkeleton />}>
-                <CurrentWeather coords={coordinates} />
-              </Suspense>
-            </div>
-            <div className="col-span-1 order-3 2xl:order-4 2xl:row-span-2">
-              <Suspense fallback={<DailySkeleton />}>
-                <DailyForecast coords={coordinates} />
-              </Suspense>
-            </div>
-            <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-4 2xl:order-3">
-              <Suspense fallback={<HourlySkeleton />}>
-                <HourlyForecast coords={coordinates} />
-              </Suspense>
-            </div>
-            <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-5">
-              <Suspense fallback={<AdditionalInfoSkeleton />}>
-                <AdditionalInfo coords={coordinates} />
-              </Suspense>
-            </div>
+            <QueryErrorResetBoundary>
+              {({ reset }) => (
+                <QueryErrorBoundary
+                  fallbackClassName="col-span-full flex min-h-40 flex-col items-center justify-center gap-3 rounded-md bg-card p-6 text-center"
+                  key={`${coordinates.lat},${coordinates.lon}`}
+                  onReset={reset}
+                  resource="weather data"
+                >
+                  <div className="col-span-1 2xl:row-span-2 order-2">
+                    <Suspense fallback={<CurrentSkeleton />}>
+                      <CurrentWeather coords={coordinates} />
+                    </Suspense>
+                  </div>
+                  <div className="col-span-1 order-3 2xl:order-4 2xl:row-span-2">
+                    <Suspense fallback={<DailySkeleton />}>
+                      <DailyForecast coords={coordinates} />
+                    </Suspense>
+                  </div>
+                  <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-4 2xl:order-3">
+                    <Suspense fallback={<HourlySkeleton />}>
+                      <HourlyForecast coords={coordinates} />
+                    </Suspense>
+                  </div>
+                  <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-5">
+                    <Suspense fallback={<AdditionalInfoSkeleton />}>
+                      <AdditionalInfo coords={coordinates} />
+                    </Suspense>
+                  </div>
+                </QueryErrorBoundary>
+              )}
+            </QueryErrorResetBoundary>
           </div>
         ) : (
           <section

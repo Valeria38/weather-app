@@ -53,7 +53,8 @@ test.describe('Location lookup failures', () => {
     page,
   }) => {
     await setupApiMocks(page);
-    await page.route('**/geo/1.0/direct**', async (route) => {
+
+    await page.route('**/*geo/1.0/direct*', async (route) => {
       await route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -69,7 +70,8 @@ test.describe('Location lookup failures', () => {
     const weatherRequests: string[] = [];
     page.on('request', (request) => {
       if (
-        request.url().includes('/data/3.0/onecall') ||
+        request.url().includes('/data/2.5/weather') ||
+        request.url().includes('/data/2.5/forecast') ||
         request.url().includes('/data/2.5/air_pollution')
       ) {
         weatherRequests.push(request.url());
@@ -98,10 +100,12 @@ test.describe('Default location startup', () => {
 
     const geocodeRequests: string[] = [];
     const weatherRequests: string[] = [];
+    const forecastRequests: string[] = [];
     page.on('request', (request) => {
       const url = request.url();
       if (url.includes('/geo/1.0/direct')) geocodeRequests.push(url);
-      if (url.includes('/data/3.0/onecall')) weatherRequests.push(url);
+      if (url.includes('/data/2.5/weather')) weatherRequests.push(url);
+      if (url.includes('/data/2.5/forecast')) forecastRequests.push(url);
     });
 
     await page.goto('/');
@@ -111,6 +115,7 @@ test.describe('Default location startup', () => {
 
     expect(geocodeRequests).toHaveLength(0);
     expect(weatherRequests).toHaveLength(1);
+    expect(forecastRequests).toHaveLength(1);
     const weatherUrl = new URL(weatherRequests[0]);
     expect(weatherUrl.searchParams.get('lat')).toBe('40.7989');
     expect(weatherUrl.searchParams.get('lon')).toBe('-81.3784');

@@ -17,18 +17,19 @@ function DailyForecast({ coords: { lat, lon } }: Props) {
 
   return (
     <Card
-      childrenClassName="flex flex-col gap-4 text-sm lg:text-md"
+      childrenClassName="flex flex-col justify-between gap-9 text-sm lg:text-md"
       title="Daily forecast"
     >
       {data.daily.map((day) => {
         return (
           <div
-            key={day.dt}
-            className="grid grid-cols-5 gap-4 items-left 2xl:justify-between"
+            key={day.date}
+            className="grid grid-cols-5 gap-4 items-center 2xl:justify-between"
           >
             <p className="">
-              {new Date(day.dt * 1000).toLocaleDateString(undefined, {
+              {new Date(`${day.date}T12:00:00Z`).toLocaleDateString(undefined, {
                 weekday: 'short',
+                timeZone: 'UTC',
               })}
             </p>
             <WeatherIcon src={day.weather[0].icon} />

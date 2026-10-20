@@ -15,9 +15,9 @@ vi.mock('@/api', () => ({
 describe('AdditionalInfo Component', () => {
   let queryClient: QueryClient;
   const mockWeatherData = {
+    timezone_offset: 0,
     current: {
       clouds: 20,
-      uvi: 5,
       wind_deg: 180,
       pressure: 1013,
       sunrise: 1718000000,
@@ -37,7 +37,9 @@ describe('AdditionalInfo Component', () => {
   });
 
   it('renders weather metrics and formats values correctly', async () => {
-    vi.mocked(getWeather).mockResolvedValueOnce(mockWeatherData as WeatherData);
+    vi.mocked(getWeather).mockResolvedValueOnce(
+      mockWeatherData as unknown as WeatherData,
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -58,7 +60,9 @@ describe('AdditionalInfo Component', () => {
   });
 
   it('renders all weather icons and formats wind direction rotation', async () => {
-    vi.mocked(getWeather).mockResolvedValueOnce(mockWeatherData as WeatherData);
+    vi.mocked(getWeather).mockResolvedValueOnce(
+      mockWeatherData as unknown as WeatherData,
+    );
 
     render(
       <QueryClientProvider client={queryClient}>

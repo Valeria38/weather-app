@@ -4,6 +4,7 @@ import type { Coords } from 'types';
 import { getWeather } from '@/api';
 import Card from '@/components/cards/Card';
 import WeatherIcon from '@/components/WeatherIcon';
+import { formatTimeAtOffset } from '@/lib/date';
 
 type Props = {
   coords: Coords;
@@ -33,12 +34,7 @@ function CurrentWeather({ coords: { lat, lon } }: Props) {
       <div className="flex flex-col gap-2">
         <p className="text-xl text-center">Local time: </p>
         <h3 className="text-4xl font-semibold">
-          {new Intl.DateTimeFormat('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-            timeZone: data.timezone,
-          }).format(new Date(data.current.dt * 1000))}
+          {formatTimeAtOffset(data.current.dt, data.timezone_offset, 'en-US')}
         </h3>
       </div>
       <div className="flex justify-between w-full">

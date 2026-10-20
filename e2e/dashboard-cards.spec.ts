@@ -40,32 +40,33 @@ test.describe('Weather Dashboard - Cards', () => {
 
     const temperatureValues = dailySection.locator('text=°C');
     await expect(temperatureValues.first()).toBeVisible();
-    await expect(temperatureValues).toHaveCount(24);
+    await expect(temperatureValues).toHaveCount(18);
   });
 
-  test('should display and scroll Hourly forecast horizontally', async ({
+  test('should display and scroll forecast intervals horizontally', async ({
     page,
   }) => {
-    const hourlySection = page.getByRole('region', {
-      name: /hourly forecast/i,
+    const forecastSection = page.getByRole('region', {
+      name: '5-day forecast (3-hour intervals)',
+      exact: true,
     });
-    await expect(hourlySection).toBeVisible();
-    const hourlyScrollRegion = page.getByRole('region', {
-      name: '48-hour forecast items',
+    await expect(forecastSection).toBeVisible();
+    const forecastScrollRegion = page.getByRole('region', {
+      name: '5-day forecast intervals',
     });
-    await expect(hourlyScrollRegion).toHaveAttribute('tabindex', '0');
-    await hourlyScrollRegion.focus();
-    await expect(hourlyScrollRegion).toBeFocused();
+    await expect(forecastScrollRegion).toHaveAttribute('tabindex', '0');
+    await forecastScrollRegion.focus();
+    await expect(forecastScrollRegion).toBeFocused();
 
-    const hourlyTemps = hourlySection.locator('text=°C');
+    const forecastTemps = forecastSection.locator('text=°C');
 
-    await expect(hourlyTemps.first()).toBeVisible();
+    await expect(forecastTemps.first()).toBeVisible();
 
-    const lastTemp = hourlyTemps.last();
+    const lastTemp = forecastTemps.last();
     await lastTemp.scrollIntoViewIfNeeded();
 
     await expect(lastTemp).toBeVisible();
-    await expect(hourlyTemps).toHaveCount(48);
+    await expect(forecastTemps).toHaveCount(40);
   });
 
   test('should render Additional Weather Info card with parameters', async ({
@@ -79,13 +80,53 @@ test.describe('Weather Dashboard - Cards', () => {
 
     await expect(icons.first()).toBeVisible();
     await expect(additionalInfoSection.getByText(/cloudiness/i)).toBeVisible();
-    await expect(additionalInfoSection.getByText(/uv index/i)).toBeVisible();
     await expect(
       additionalInfoSection.getByText(/wind direction/i),
     ).toBeVisible();
     await expect(additionalInfoSection.getByText(/pressure/i)).toBeVisible();
     await expect(additionalInfoSection.getByText(/sunrise/i)).toBeVisible();
     await expect(additionalInfoSection.getByText(/sunset/i)).toBeVisible();
-    await expect(icons).toHaveCount(7);
+    await expect(icons).toHaveCount(6);
+  });
+});
+
+test.describe('Weather request failures', () => {
+  test('shows a retry action after a server error and recovers', async ({
+    page,
+  }) => {
+    await setupApiMocks(page);
+
+    let weatherAttempts = 0;
+    await page.route(
+      (url) => url.pathname.includes('/data/2.5/weather'),
+      async (route) => {
+        weatherAttempts += 1;
+        if (weatherAttempts <= 3) {
+          await route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ message: 'Weather service unavailable' }),
+          });
+          return;
+        }
+        await route.fallback();
+      },
+    );
+
+    await page.goto('/');
+
+    await expect(page.getByRole('alert')).toContainText(
+      'Could not load weather data',
+    );
+    await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Zoom in' })).toBeVisible();
+    expect(weatherAttempts).toBe(3);
+
+    await page.getByRole('button', { name: 'Retry' }).click();
+
+    await expect(
+      page.getByRole('region', { name: /current weather/i }),
+    ).toBeVisible();
+    expect(weatherAttempts).toBe(4);
   });
 });

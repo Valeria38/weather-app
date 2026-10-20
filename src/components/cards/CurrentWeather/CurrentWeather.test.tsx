@@ -16,13 +16,13 @@ describe('CurrentWeather Component', () => {
   let queryClient: QueryClient;
 
   const mockWeatherData = {
-    timezone: 'UTC',
+    timezone_offset: 7_200,
     current: {
       temp: 22.6,
       feels_like: 21,
       humidity: 45,
       wind_speed: 5.5,
-      dt: 1718000000,
+      dt: Date.UTC(2024, 0, 1, 22) / 1000,
       weather: [
         {
           icon: '01d',
@@ -44,7 +44,9 @@ describe('CurrentWeather Component', () => {
   });
 
   it('renders current weather details and formats temperature correctly', async () => {
-    vi.mocked(getWeather).mockResolvedValueOnce(mockWeatherData as WeatherData);
+    vi.mocked(getWeather).mockResolvedValueOnce(
+      mockWeatherData as unknown as WeatherData,
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -60,5 +62,6 @@ describe('CurrentWeather Component', () => {
     expect(screen.getByText('21 °C')).toBeInTheDocument();
     expect(screen.getByText('45 %')).toBeInTheDocument();
     expect(screen.getByText('5.5 mph')).toBeInTheDocument();
+    expect(screen.getByText('00:00')).toBeInTheDocument();
   });
 });

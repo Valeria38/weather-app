@@ -18,7 +18,7 @@ describe('DailyForecast Component', () => {
   const mockWeatherData = {
     daily: [
       {
-        dt: 1718000000,
+        date: '2024-06-10',
         temp: {
           day: 24.5,
           min: 16.2,
@@ -46,7 +46,9 @@ describe('DailyForecast Component', () => {
   });
 
   it('renders daily forecast list and formats temperatures correctly', async () => {
-    vi.mocked(getWeather).mockResolvedValueOnce(mockWeatherData as WeatherData);
+    vi.mocked(getWeather).mockResolvedValueOnce(
+      mockWeatherData as unknown as WeatherData,
+    );
 
     render(
       <QueryClientProvider client={queryClient}>

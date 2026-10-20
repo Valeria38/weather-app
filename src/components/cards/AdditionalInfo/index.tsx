@@ -7,9 +7,9 @@ import Pressure from '@/assets/pressure.svg?react';
 import Sunrise from '@/assets/sunrise.svg?react';
 import Sunset from '@/assets/sunset.svg?react';
 import UpArrow from '@/assets/upArrow.svg?react';
-import Uv from '@/assets/uv.svg?react';
 import Wind from '@/assets/wind.svg?react';
 import Card from '@/components/cards/Card';
+import { formatTimeAtOffset } from '@/lib/date';
 
 type Props = {
   coords: Coords;
@@ -33,7 +33,11 @@ function AdditionalInfo({ coords: { lat, lon } }: Props) {
             <Icon className="size-8  mx-4" />
           </div>
           <span>
-            <FormatComponent value={value} number={data.current[value]} />
+            <FormatComponent
+              value={value}
+              number={data.current[value]}
+              timezoneOffset={data.timezone_offset}
+            />
           </span>
         </div>
       ))}
@@ -43,13 +47,17 @@ function AdditionalInfo({ coords: { lat, lon } }: Props) {
 
 export default AdditionalInfo;
 
-function FormatComponent({ value, number }: { value: string; number: number }) {
+function FormatComponent({
+  value,
+  number,
+  timezoneOffset,
+}: {
+  value: string;
+  number: number;
+  timezoneOffset: number;
+}) {
   if (value === 'sunrise' || value === 'sunset') {
-    return new Date(number * 1000).toLocaleTimeString(undefined, {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: false,
-    });
+    return formatTimeAtOffset(number, timezoneOffset);
   }
   if (value === 'wind_deg') {
     return (
@@ -72,11 +80,6 @@ const rows = [
     Icon: Cloud,
   },
 
-  {
-    label: 'UV index',
-    value: 'uvi',
-    Icon: Uv,
-  },
   {
     label: 'Wind direction',
     value: 'wind_deg',

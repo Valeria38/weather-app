@@ -5,9 +5,9 @@ function HourlySkeleton() {
   return (
     <Card
       childrenClassName="flex gap-6 overflow-x-scroll"
-      title="Hourly forecast(48 hours)"
+      title="5-day forecast (3-hour intervals)"
     >
-      {Array.from({ length: 48 }).map((_, i) => (
+      {Array.from({ length: 40 }).map((_, i) => (
         <div
           key={i}
           className="flex flex-col gap-2 items-center p-2 2xl:justify-between"

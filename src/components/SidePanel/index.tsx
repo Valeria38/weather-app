@@ -1,4 +1,7 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import {
+  QueryErrorResetBoundary,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import clsx from 'clsx';
 import { type Dispatch, type SetStateAction, Suspense } from 'react';
 import type { Coords } from 'types';
@@ -7,6 +10,7 @@ import { getAirPollution } from '@/api';
 import ChevronRight from '@/assets/chevronRight.svg?react';
 import Information from '@/assets/information.svg?react';
 import Card from '@/components/cards/Card';
+import QueryErrorBoundary from '@/components/QueryErrorBoundary';
 import SidePanelSkeleton from '@/components/skeletons/SidePanelSkeleton';
 import { Slider } from '@/components/ui/slider';
 import {
@@ -37,9 +41,19 @@ function SidePanel(props: Props) {
       >
         <ChevronRight className="size-8  cursor-pointer -ml-2 lg:hidden" />
       </button>
-      <Suspense fallback={<SidePanelSkeleton />}>
-        <AirPollution {...props} />
-      </Suspense>
+      <QueryErrorResetBoundary>
+        {({ reset }) => (
+          <QueryErrorBoundary
+            key={`${props.coords.lat},${props.coords.lon}`}
+            onReset={reset}
+            resource="air pollution data"
+          >
+            <Suspense fallback={<SidePanelSkeleton />}>
+              <AirPollution {...props} />
+            </Suspense>
+          </QueryErrorBoundary>
+        )}
+      </QueryErrorResetBoundary>
     </aside>
   );
 }
