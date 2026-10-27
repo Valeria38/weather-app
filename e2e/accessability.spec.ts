@@ -8,6 +8,16 @@ async function expectDashboardToBeAccessible(page: Page) {
   await expect(
     page.getByRole('heading', { name: 'Air pollution' }),
   ).toBeVisible();
+  await page.addStyleTag({
+    content: `
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      `,
+  });
   await page.evaluate(async () => {
     await Promise.all(
       document
@@ -24,7 +34,11 @@ async function expectDashboardToBeAccessible(page: Page) {
     violations.map(({ id, impact, nodes }) => ({
       id,
       impact,
-      elements: nodes.map(({ html }) => html),
+      elements: nodes.map(({ html, failureSummary, any }) => ({
+        html,
+        failureSummary,
+        contrast: any.map(({ data }) => data),
+      })),
     })),
   ).toEqual([]);
 }
