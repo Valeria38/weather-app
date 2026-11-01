@@ -1,5 +1,10 @@
-import { QueryErrorResetBoundary, useQuery } from '@tanstack/react-query';
-import { Suspense, useState } from 'react';
+import {
+  QueryErrorResetBoundary,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Suspense, useEffect, useState } from 'react';
 import type { Coords } from 'types';
 
 import { getGeocode } from '@/api';
@@ -20,15 +25,27 @@ import CurrentSkeleton from '@/components/skeletons/CurrentSkeleton.tsx';
 import DailySkeleton from '@/components/skeletons/DailySkeleton.tsx';
 import HourlySkeleton from '@/components/skeletons/HourlySkeleton.tsx';
 import ThemeToggle from '@/components/ThemeToggle';
+import {
+  isCoords,
+  readLastLocation,
+  saveLastLocation,
+} from '@/lib/queryPersistence';
 
 const DEFAULT_LOCATION = 'Canton, OH, US';
 const DEFAULT_COORDS: Coords = { lat: 40.7989, lon: -81.3784 };
 
 function App() {
-  const [coords, setCoords] = useState<Coords>(DEFAULT_COORDS);
-  const [location, setLocation] = useState<string>(DEFAULT_LOCATION);
+  const queryClient = useQueryClient();
+  const [lastLocation] = useState(readLastLocation);
+  const [coords, setCoords] = useState<Coords>(
+    lastLocation?.coords ?? DEFAULT_COORDS,
+  );
+  const [location, setLocation] = useState<string>(
+    lastLocation?.name ?? DEFAULT_LOCATION,
+  );
   const [mapType, setMapType] = useState<string>('clouds_new');
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+  const isRestoredLocation = lastLocation?.name === location;
 
   const {
     data: geocodeData,
@@ -37,24 +54,62 @@ function App() {
     refetch: retryGeocode,
   } = useQuery({
     queryKey: ['geocode', location],
-    queryFn: () => getGeocode(location),
-    enabled: location !== 'custom' && location !== DEFAULT_LOCATION,
+    queryFn: async () => {
+      const results = await getGeocode(location);
+      const result = results[0];
+      if (result) {
+        saveLastLocation(location, { lat: result.lat, lon: result.lon });
+      }
+      return results;
+    },
+    enabled:
+      location !== 'custom' &&
+      location !== DEFAULT_LOCATION &&
+      !isRestoredLocation,
   });
-
   const onMapClick = (lat: number, lon: number) => {
-    setCoords({ lat, lon });
+    const nextCoords = { lat, lon };
+    saveLastLocation('custom', nextCoords);
+    setCoords(nextCoords);
     setLocation('custom');
   };
 
   const geocodedLocation = geocodeData?.[0];
-  const geocodedLocationJsx = geocodedLocation
-    ? { lat: geocodedLocation.lat, lon: geocodedLocation.lon }
-    : undefined;
+  let geocodedLocationCoords: Coords | undefined;
+  if (geocodedLocation) {
+    geocodedLocationCoords = {
+      lat: geocodedLocation.lat,
+      lon: geocodedLocation.lon,
+    };
+  } else if (isRestoredLocation && lastLocation) {
+    geocodedLocationCoords = lastLocation.coords;
+  }
   const usesCurrentCoords =
     location === 'custom' || location === DEFAULT_LOCATION;
   const coordinates: Coords | undefined = usesCurrentCoords
     ? coords
-    : geocodedLocationJsx;
+    : geocodedLocationCoords;
+  const coordinateLat = coordinates?.lat;
+  const coordinateLon = coordinates?.lon;
+
+  useEffect(() => {
+    if (coordinateLat === undefined || coordinateLon === undefined) return;
+
+    const currentCoords = { lat: coordinateLat, lon: coordinateLon };
+    saveLastLocation(location, currentCoords);
+    queryClient.removeQueries({
+      predicate: (query) => {
+        const [resource, first, second] = query.queryKey;
+        if (resource === 'weather') {
+          return first !== coordinateLat || second !== coordinateLon;
+        }
+        if (resource === 'pollution' && isCoords(first)) {
+          return first.lat !== coordinateLat || first.lon !== coordinateLon;
+        }
+        return false;
+      },
+    });
+  }, [location, coordinateLat, coordinateLon, queryClient]);
 
   const geocodeErrorJsx = isGeocodeError ? (
     <>
@@ -73,6 +128,7 @@ function App() {
 
   return (
     <>
+      <ReactQueryDevtools initialIsOpen={false} position="bottom" />
       <MobileHeader setIsSidePanelOpen={setIsSidePanelOpen} />
       <div className="flex flex-col gap-8 p-8 pt-4 xs:pt-8 w-full lg:w-[calc(100dvw-var(--sidebar-width))] 2xl:h-screen 2xl:min-h-[1200px]">
         <div className="flex flex-col gap-4 sm:flex-row xs:gap-4 justify-between">

@@ -14,7 +14,7 @@ test.describe('Weather Dashboard - Cards', () => {
     const currentWeatherSection = page.getByRole('region', {
       name: /current weather/i,
     });
-    const timeValue = currentWeatherSection.locator('text=/\\d{2}:\\d{2}/');
+    const timeValue = currentWeatherSection.locator('text=/[0-9]{2}:[0-9]{2}/');
     const weatherIcon = currentWeatherSection.getByRole('img', {
       name: /weather icon/i,
     });
@@ -59,7 +59,6 @@ test.describe('Weather Dashboard - Cards', () => {
     await expect(forecastScrollRegion).toBeFocused();
 
     const forecastTemps = forecastSection.locator('text=°C');
-
     await expect(forecastTemps.first()).toBeVisible();
 
     const lastTemp = forecastTemps.last();
@@ -114,7 +113,6 @@ test.describe('Weather request failures', () => {
     );
 
     await page.goto('/');
-
     await expect(page.getByRole('alert')).toContainText(
       'Could not load weather data',
     );
@@ -123,10 +121,110 @@ test.describe('Weather request failures', () => {
     expect(weatherAttempts).toBe(3);
 
     await page.getByRole('button', { name: 'Retry' }).click();
-
     await expect(
       page.getByRole('region', { name: /current weather/i }),
     ).toBeVisible();
     expect(weatherAttempts).toBe(4);
+  });
+});
+
+test.describe('Persisted location data', () => {
+  test('restores the last city, weather, and pollution after reload', async ({
+    page,
+  }) => {
+    await setupApiMocks(page);
+    await page.goto('/');
+
+    const locationSelect = page.getByRole('combobox', { name: 'Location' });
+    await locationSelect.click();
+    await page.getByRole('option', { name: /seoul/i }).click();
+    await expect(locationSelect).toHaveText(/seoul/i);
+    const seoulWeather = page.getByRole('region', {
+      name: /current weather/i,
+    });
+    await expect(seoulWeather.getByText('11 °C')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Air pollution' }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () =>
+          JSON.parse(
+            localStorage.getItem('weather-app:last-location') ?? 'null',
+          )?.name,
+      ),
+    ).toBe('Seoul');
+
+    await expect
+      .poll(async () =>
+        page.evaluate(() => {
+          const serialized = localStorage.getItem('weather-app:query-cache');
+          if (!serialized) return false;
+
+          const coordinatesMatch = (value: unknown, expected: number) =>
+            typeof value === 'number' && Math.abs(value - expected) < 0.000001;
+          const persisted = JSON.parse(serialized);
+          const queries = persisted.clientState.queries;
+          const hasSeoulWeather = queries.some(
+            ({
+              queryKey,
+              state,
+            }: {
+              queryKey: unknown[];
+              state: Record<string, unknown>;
+            }) =>
+              queryKey[0] === 'weather' &&
+              coordinatesMatch(queryKey[1], 37.5665) &&
+              coordinatesMatch(queryKey[2], 126.978) &&
+              state.status === 'success',
+          );
+          const hasSeoulPollution = queries.some(
+            ({
+              queryKey,
+              state,
+            }: {
+              queryKey: unknown[];
+              state: Record<string, unknown>;
+            }) => {
+              const coords = queryKey[1];
+              return (
+                queryKey[0] === 'pollution' &&
+                typeof coords === 'object' &&
+                coords !== null &&
+                'lat' in coords &&
+                'lon' in coords &&
+                coordinatesMatch(coords.lat, 37.5665) &&
+                coordinatesMatch(coords.lon, 126.978) &&
+                state.status === 'success'
+              );
+            },
+          );
+          return hasSeoulWeather && hasSeoulPollution;
+        }),
+      )
+      .toBe(true);
+
+    await page.route(
+      (url) =>
+        url.pathname.startsWith('/geo/1.0/') ||
+        url.pathname.startsWith('/data/2.5/'),
+      (route) => route.fulfill({ status: 503, body: 'Offline' }),
+    );
+    await page.reload();
+
+    await expect(page.getByRole('combobox', { name: 'Location' })).toHaveText(
+      /seoul/i,
+    );
+    const restoredWeather = page.getByRole('region', {
+      name: /current weather/i,
+    });
+    await expect(restoredWeather.getByText('11 °C')).toBeVisible();
+    const pollutionPanel = page.getByRole('complementary', {
+      name: 'Air pollution',
+    });
+    await expect(
+      pollutionPanel.getByRole('heading', { name: '1' }),
+    ).toBeVisible();
+    await expect(page.getByRole('alert')).toHaveCount(0);
   });
 });
