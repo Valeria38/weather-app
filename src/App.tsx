@@ -28,7 +28,9 @@ import ThemeToggle from '@/components/ThemeToggle';
 import {
   isCoords,
   readLastLocation,
+  readLastMapType,
   saveLastLocation,
+  saveLastMapType,
 } from '@/lib/queryPersistence';
 
 const DEFAULT_LOCATION = 'Canton, OH, US';
@@ -43,7 +45,7 @@ function App() {
   const [location, setLocation] = useState<string>(
     lastLocation?.name ?? DEFAULT_LOCATION,
   );
-  const [mapType, setMapType] = useState<string>('clouds_new');
+  const [mapType, setMapType] = useState(readLastMapType);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const isRestoredLocation = lastLocation?.name === location;
 
@@ -91,6 +93,10 @@ function App() {
     : geocodedLocationCoords;
   const coordinateLat = coordinates?.lat;
   const coordinateLon = coordinates?.lon;
+
+  useEffect(() => {
+    saveLastMapType(mapType);
+  }, [mapType]);
 
   useEffect(() => {
     if (coordinateLat === undefined || coordinateLon === undefined) return;

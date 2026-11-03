@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
   readLastLocation,
+  readLastMapType,
   saveLastLocation,
+  saveLastMapType,
   shouldPersistWeatherQuery,
 } from './queryPersistence';
 
@@ -19,6 +21,16 @@ describe('query persistence', () => {
       name: 'Tokyo',
       coords: { lat: 35.6762, lon: 139.6503 },
     });
+  });
+
+  it('stores a valid map type and falls back for an invalid value', () => {
+    expect(readLastMapType()).toBe('clouds_new');
+
+    saveLastMapType('wind_new');
+    expect(readLastMapType()).toBe('wind_new');
+
+    localStorage.setItem('weather-app:last-map-type', 'unknown_layer');
+    expect(readLastMapType()).toBe('clouds_new');
   });
 
   it('persists weather and pollution only for the last location', () => {
@@ -38,6 +50,16 @@ describe('query persistence', () => {
     expect(
       shouldPersistWeatherQuery(cache.find({ queryKey: weatherKey })!),
     ).toBe(true);
+
+    const staleWeatherKey = ['weather', 35.6762, 139.6503];
+    const staleWeatherQuery = cache.find({ queryKey: staleWeatherKey })!;
+    staleWeatherQuery.setState({
+      ...staleWeatherQuery.state,
+      status: 'error',
+      error: new Error('Background refresh failed'),
+    });
+    expect(shouldPersistWeatherQuery(staleWeatherQuery)).toBe(true);
+
     expect(
       shouldPersistWeatherQuery(cache.find({ queryKey: pollutionKey })!),
     ).toBe(true);

@@ -23,7 +23,7 @@ export default defineConfig({
         scope: '/weather-app/',
         display: 'standalone',
         theme_color: '#121212',
-        background_color: '#121212',
+        background_color: '#1e1e1e',
         orientation: 'portrait',
         icons: [
           {
@@ -61,6 +61,40 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
+          },
+        ],
+      },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/tile\.openweathermap\.org\/map\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'weather-tiles-cache',
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 7 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern:
+              /^https:\/\/(tiles\.stadiamaps\.com|.*\.tile\.openstreetmap\.org)\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'base-map-tiles-cache',
+              expiration: {
+                maxEntries: 300,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
           },
         ],
       },

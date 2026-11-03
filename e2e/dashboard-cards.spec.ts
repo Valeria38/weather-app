@@ -139,6 +139,10 @@ test.describe('Persisted location data', () => {
     await locationSelect.click();
     await page.getByRole('option', { name: /seoul/i }).click();
     await expect(locationSelect).toHaveText(/seoul/i);
+    const mapTypeSelect = page.getByRole('combobox', { name: 'Map type' });
+    await mapTypeSelect.click();
+    await page.getByRole('option', { name: /pressure/i }).click();
+    await expect(mapTypeSelect).toHaveText(/pressure/i);
     const seoulWeather = page.getByRole('region', {
       name: /current weather/i,
     });
@@ -161,6 +165,7 @@ test.describe('Persisted location data', () => {
           const serialized = localStorage.getItem('weather-app:query-cache');
           if (!serialized) return false;
 
+          const testCoords = { lat: 37.5665, lon: 126.978 };
           const coordinatesMatch = (value: unknown, expected: number) =>
             typeof value === 'number' && Math.abs(value - expected) < 0.000001;
           const persisted = JSON.parse(serialized);
@@ -174,8 +179,8 @@ test.describe('Persisted location data', () => {
               state: Record<string, unknown>;
             }) =>
               queryKey[0] === 'weather' &&
-              coordinatesMatch(queryKey[1], 37.5665) &&
-              coordinatesMatch(queryKey[2], 126.978) &&
+              coordinatesMatch(queryKey[1], testCoords.lat) &&
+              coordinatesMatch(queryKey[2], testCoords.lon) &&
               state.status === 'success',
           );
           const hasSeoulPollution = queries.some(
@@ -193,8 +198,8 @@ test.describe('Persisted location data', () => {
                 coords !== null &&
                 'lat' in coords &&
                 'lon' in coords &&
-                coordinatesMatch(coords.lat, 37.5665) &&
-                coordinatesMatch(coords.lon, 126.978) &&
+                coordinatesMatch(coords.lat, testCoords.lat) &&
+                coordinatesMatch(coords.lon, testCoords.lon) &&
                 state.status === 'success'
               );
             },
@@ -215,6 +220,9 @@ test.describe('Persisted location data', () => {
     await expect(page.getByRole('combobox', { name: 'Location' })).toHaveText(
       /seoul/i,
     );
+    await expect(page.getByRole('combobox', { name: 'Map type' })).toHaveText(
+      /pressure/i,
+    );
     const restoredWeather = page.getByRole('region', {
       name: /current weather/i,
     });
@@ -224,6 +232,20 @@ test.describe('Persisted location data', () => {
     });
     await expect(
       pollutionPanel.getByRole('heading', { name: '1' }),
+    ).toBeVisible();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+
+    await page.reload();
+    await expect(page.getByRole('combobox', { name: 'Location' })).toHaveText(
+      /seoul/i,
+    );
+    await expect(
+      page.getByRole('region', { name: /current weather/i }).getByText('11 °C'),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole('complementary', { name: 'Air pollution' })
+        .getByRole('heading', { name: '1' }),
     ).toBeVisible();
     await expect(page.getByRole('alert')).toHaveCount(0);
   });

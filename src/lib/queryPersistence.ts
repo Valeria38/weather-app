@@ -4,6 +4,15 @@ import type { Coords } from 'types';
 export const PERSISTED_QUERY_MAX_AGE = 24 * 60 * 60 * 1000;
 
 const LAST_LOCATION_STORAGE_KEY = 'weather-app:last-location';
+const LAST_MAP_TYPE_STORAGE_KEY = 'weather-app:last-map-type';
+export const MAP_TYPES = [
+  'clouds_new',
+  'precipitation_new',
+  'pressure_new',
+  'wind_new',
+  'temp_new',
+] as const;
+export type MapType = (typeof MAP_TYPES)[number];
 
 export type LastLocation = {
   name: string;
@@ -33,8 +42,29 @@ export function saveLastLocation(name: string, coords: Coords) {
   }
 }
 
+export function readLastMapType(): MapType {
+  try {
+    const storedMapType = localStorage.getItem(LAST_MAP_TYPE_STORAGE_KEY);
+    return (
+      MAP_TYPES.find((mapType) => mapType === storedMapType) ?? MAP_TYPES[0]
+    );
+  } catch {
+    return MAP_TYPES[0];
+  }
+}
+
+export function saveLastMapType(mapType: string) {
+  if (!MAP_TYPES.some((validMapType) => validMapType === mapType)) return;
+
+  try {
+    localStorage.setItem(LAST_MAP_TYPE_STORAGE_KEY, mapType);
+  } catch {
+    // Persistence is optional when storage is unavailable or full.
+  }
+}
+
 export function shouldPersistWeatherQuery(query: Query): boolean {
-  if (query.state.status !== 'success') return false;
+  if (query.state.data === undefined) return false;
 
   const lastLocation = readLastLocation();
   if (!lastLocation) return false;

@@ -37,6 +37,7 @@ const queryClient = new QueryClient({
       gcTime: PERSISTED_QUERY_MAX_AGE,
       staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
+      networkMode: 'offlineFirst',
     },
   },
 });

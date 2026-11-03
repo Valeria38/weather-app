@@ -8,15 +8,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { MAP_TYPES, type MapType } from '@/lib/queryPersistence';
 
 type Props = {
-  mapType: string;
-  setMapType: Dispatch<SetStateAction<string>>;
+  mapType: MapType;
+  setMapType: Dispatch<SetStateAction<MapType>>;
 };
 
 function MapTypeDropdown({ mapType, setMapType }: Props) {
   return (
-    <Select value={mapType} onValueChange={(value) => setMapType(value)}>
+    <Select
+      value={mapType}
+      onValueChange={(value) => {
+        const selectedMapType = MAP_TYPES.find((type) => type === value);
+        if (selectedMapType) setMapType(selectedMapType);
+      }}
+    >
       <SelectTrigger
         className="w-full sm:w-[150px] xl:w-[180px]"
         aria-label="Map type"
@@ -25,7 +32,7 @@ function MapTypeDropdown({ mapType, setMapType }: Props) {
       </SelectTrigger>
       <SelectContent className="z-1001">
         <SelectGroup>
-          {types.map((type) => (
+          {MAP_TYPES.map((type) => (
             <SelectItem key={type} value={type} className="capitalize">
               {type.replace('_new', '')}
             </SelectItem>
@@ -37,11 +44,3 @@ function MapTypeDropdown({ mapType, setMapType }: Props) {
 }
 
 export default MapTypeDropdown;
-
-const types = [
-  'clouds_new',
-  'precipitation_new',
-  'pressure_new',
-  'wind_new',
-  'temp_new',
-];
