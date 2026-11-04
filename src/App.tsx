@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Suspense, useEffect, useState } from 'react';
+import { Toaster } from 'sonner';
 import type { Coords } from 'types';
 
 import { getGeocode } from '@/api';
@@ -18,6 +19,7 @@ import MapTypeDropdown from '@/components/dropdowns/MapTypeDropdown';
 import MapLegend from '@/components/MapLegend';
 import MapView from '@/components/MapView';
 import MobileHeader from '@/components/MobileHeader';
+import NetworkListener from '@/components/NetworkListener';
 import QueryErrorBoundary from '@/components/QueryErrorBoundary';
 import SidePanel from '@/components/SidePanel';
 import AdditionalInfoSkeleton from '@/components/skeletons/AdditionalInfoSkeleton.tsx';
@@ -218,6 +220,8 @@ function App() {
           setIsSidePanelOpen={setIsSidePanelOpen}
         />
       )}
+      <NetworkListener />
+      <Toaster position="top-right" richColors />
     </>
   );
 }
